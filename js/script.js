@@ -1,11 +1,12 @@
-const guessedLetter = document.querySelector(".guessed-letter");
-const button = document.querySelector(".guess"); 
+const guessedLettersElement = document.querySelector(".guessed-letters");
+const guessLetterButton = document.querySelector(".guess"); 
 const letterInput = document.querySelector(".letter");
 const wordInProgress = document.querySelector(".word-in-progress");
-const remaining = document.querySelector(".remaining");
-const span = document.querySelector("span");
+const remainingGuessesElement = document.querySelector(".remaining");
+const remainingGuessesSpan = document.querySelector("span");
 const message = document.querySelector(".message");
-const playAgainHidden = document.querySelector(".play-again hide");
+const playAgainButton = document.querySelector(".play-again hide");
+
 const word = "magnolia";
 const guessedLetters = [];
 
@@ -20,7 +21,7 @@ const placeholder = function (word) {
 
 placeholder(word);
 
-button.addEventListener("click", function (e) {
+guessLetterButton.addEventListener("click", function (e) {
     e.preventDefault();
 
     message.innerText = "";
@@ -30,19 +31,19 @@ button.addEventListener("click", function (e) {
         makeGuess(guess);
     }
     letterInput.value = "";
-} );
+});
 
-const validateInput = function(inputValue) {
-    const acceptedLetter = "/[a-zA-Z]/";
+const validateInput = function (input) {
+    const acceptedLetter = /[a-zA-Z]/;
 
-    if (inputValue.length === 0) {
+    if (input.length === 0) {
         message.innerText = "Please enter a letter."; }
-            else if (inputValue.length > 1) {
+            else if (input.length > 1) {
                 message.innerText = "Please enter only one letter";
-            } else if (!inputValue.match(acceptedLetter)) {
+            } else if (!input.match(acceptedLetter)) {
                 message.innerText = "Please enter a valid letter from A-Z";
             } else {
-                return inputValue;
+                return input;
     }
 };
 
@@ -53,8 +54,43 @@ const makeGuess = function (guess) {
     } else {
         guessedLetters.push(guess);
         console.log(guessedLetters);
+        showGuessedLetters();
+        updateWordInProgress(guessedLetters);
+    }
+};
+
+
+const showGuessedLetters = function () {
+    guessedLettersElement.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li = document.createElement("li");
+        li.innerText = letter;
+        guessedLettersElement.append(li);
+    } 
+};
+
+const updateWordInProgress = function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const updatedWord = [];
+
+    for (const letter of wordArray) {
+    if (guessedLetters.includes(letter)) {
+        updatedWord.push(letter.toUpperCase()); 
+    } else {
+        updatedWord.push("●"); 
     }
 }
+wordInProgress.innerText = updatedWord.join("");
+checkWin();
+};
+
+const checkWin = function () {
+    if (word.toUpperCase() === wordInProgress.innerText) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed the correct word! Congratulations!</p>`;
+    }
+};
 
 
 
