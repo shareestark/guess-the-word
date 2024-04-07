@@ -7,8 +7,23 @@ const remainingGuessesSpan = document.querySelector("span");
 const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again hide");
 
-const word = "magnolia";
+let word = "magnolia";
 const guessedLetters = [];
+
+let remainingGuesses = 8;
+
+const getWord = async function () {
+    const res = await fetch (
+        "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt"
+    ); 
+    const words = await res.text(); 
+    const wordArray = words.split("\n");  
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+    word = wordArray[randomIndex].trim();
+    placeholder(word);
+};
+
+getWord();
 
 const placeholder = function (word) {
     const placeholderLetters = [];
@@ -56,6 +71,7 @@ const makeGuess = function (guess) {
         console.log(guessedLetters);
         showGuessedLetters();
         updateWordInProgress(guessedLetters);
+        updateRemainingGuesses(guess);
     }
 };
 
@@ -85,12 +101,35 @@ wordInProgress.innerText = updatedWord.join("");
 checkWin();
 };
 
+
 const checkWin = function () {
     if (word.toUpperCase() === wordInProgress.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the correct word! Congratulations!</p>`;
     }
 };
+
+
+//Fetch Words & Remaining Guesses Step 5 of 5
+
+const updateRemainingGuesses = function (guess) {
+    const wordUpper = word.toUpperCase(); 
+    if (!word.includes(guess)) {
+    message.innerText = `The world does not include that letter. Try again!`};
+    remainingGuesses -= 1; 
+        if (word.includes(guess)) {
+            message.innerText = `You guessed right! Keep it coming!`;
+        } else if (remainingGuesses === 0) {
+            message.innerText = `You have run out of chances. The correct word is ${word}.`
+    }
+    }
+
+// Add an async function 
+
+
+
+
+    
 
 
 
