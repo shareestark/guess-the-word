@@ -5,7 +5,7 @@ const wordInProgress = document.querySelector(".word-in-progress");
 const remainingGuessesElement = document.querySelector(".remaining");
 const remainingGuessesSpan = document.querySelector("span");
 const message = document.querySelector(".message");
-const playAgainButton = document.querySelector(".play-again hide");
+const playAgainButton = document.querySelector(".play-again");
 
 let word = "magnolia";
 let guessedLetters = [];
@@ -100,12 +100,12 @@ checkWin();
 };
 
 const updateRemainingGuesses = function (guess) {
-    const upperWordword = word.toUpperCase(); 
+    const upperWord = word.toUpperCase(); 
     if (!upperWord.includes(guess)) {
         message.innerText = `The word does not include that letter. Try again!`;
         remainingGuesses -= 1;
     } else {
-        message.innerText = `Good guess! The word hast the letter ${guess}.`
+        message.innerText = `Good guess! The word has the letter ${guess}.`
     }
 
     if (remainingGuesses === 0) {
@@ -143,12 +143,14 @@ playAgainButton.addEventListener("click", function () {
     guessedLettersElement.innerHTML = "";
     remainingGuesses = 8;
     remainingGuessesSpan.innerText = `${remainingGuesses} guesses`; // Update remaining guesses display
+    getWord(); // Call getWord() to fetch a new word
+    
     guessLetterButton.classList.remove("hide"); // Show Guess button
     remainingGuessesElement.classList.remove("hide"); // Show paragraph with remaining guesses
     guessedLettersElement.classList.remove("hide"); // Show guessed letters
     playAgainButton.classList.add("hide"); // Hide Play Again button
-    getWord(); // Call getWord() to fetch a new word
-})
+    
+});
 
 
     
