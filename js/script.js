@@ -8,8 +8,9 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again hide");
 
 let word = "magnolia";
-const guessedLetters = [];
+let guessedLetters = [];
 
+//variable will change over time
 let remainingGuesses = 8;
 
 const getWord = async function () {
@@ -33,8 +34,6 @@ const placeholder = function (word) {
     }
     wordInProgress.innerText = placeholderLetters.join("");
 }
-
-placeholder(word);
 
 guessLetterButton.addEventListener("click", function (e) {
     e.preventDefault();
@@ -75,7 +74,6 @@ const makeGuess = function (guess) {
     }
 };
 
-
 const showGuessedLetters = function () {
     guessedLettersElement.innerHTML = "";
     for (const letter of guessedLetters) {
@@ -101,32 +99,56 @@ wordInProgress.innerText = updatedWord.join("");
 checkWin();
 };
 
+const updateRemainingGuesses = function (guess) {
+    const upperWordword = word.toUpperCase(); 
+    if (!upperWord.includes(guess)) {
+        message.innerText = `The word does not include that letter. Try again!`;
+        remainingGuesses -= 1;
+    } else {
+        message.innerText = `Good guess! The word hast the letter ${guess}.`
+    }
 
+    if (remainingGuesses === 0) {
+        message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`;
+        startOver();
+    } else if (remainingGuesses === 1) {
+        remainingGuessesSpan.innerText = `${remainingGuesses} guess`;
+    } else {
+        remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
+    }
+}
+
+    
 const checkWin = function () {
     if (word.toUpperCase() === wordInProgress.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the correct word! Congratulations!</p>`;
+        startOver();
     }
 };
 
-
-//Fetch Words & Remaining Guesses Step 5 of 5
-
-const updateRemainingGuesses = function (guess) {
-    const wordUpper = word.toUpperCase(); 
-    if (!word.includes(guess)) {
-    message.innerText = `The world does not include that letter. Try again!`};
-    remainingGuesses -= 1; 
-        if (word.includes(guess)) {
-            message.innerText = `You guessed right! Keep it coming!`;
-        } else if (remainingGuesses === 0) {
-            message.innerText = `You have run out of chances. The correct word is ${word}.`
-    }
-    }
-
 // Add an async function 
 
+const startOver = () => {
+    guessLetterButton.classList.add("hide");
+    remainingGuessesSpan.classList.add("hide");
+    remainingGuessesElement.classList.add("hide");
+    playAgainButton.classList.remove("hide");
+};
 
+playAgainButton.addEventListener("click", function () {
+    message.classList.remove("win");
+    message.innerText = "";
+    guessedLetters = [];
+    guessedLettersElement.innerHTML = "";
+    remainingGuesses = 8;
+    remainingGuessesSpan.innerText = `${remainingGuesses} guesses`; // Update remaining guesses display
+    guessLetterButton.classList.remove("hide"); // Show Guess button
+    remainingGuessesElement.classList.remove("hide"); // Show paragraph with remaining guesses
+    guessedLettersElement.classList.remove("hide"); // Show guessed letters
+    playAgainButton.classList.add("hide"); // Hide Play Again button
+    getWord(); // Call getWord() to fetch a new word
+})
 
 
     
